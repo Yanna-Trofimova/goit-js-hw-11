@@ -38,10 +38,8 @@ function onSubmit(e) {
        
     }  
     
-  pixApi.getPic();
   btnLoadMore.show();
   fetchPix()
-    ;
         
 }
 

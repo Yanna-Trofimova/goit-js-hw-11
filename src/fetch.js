@@ -2,7 +2,7 @@
 
 export default class PixApi {
     constructor() {
-        this.queryPage = 1;
+        this.queryPage = '';
         this.searchQuery = "";
     }
 
