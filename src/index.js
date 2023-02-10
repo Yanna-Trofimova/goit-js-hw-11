@@ -1,20 +1,19 @@
 import Notiflix from 'notiflix';
 import BtnLoadMore from './components/loadMoreBtn.js';
 
-// import './sass/index.scss';
+
 import PixApi from './fetch.js';
 
 
 
-// API.getPic("dog").then(console.log);
+
 
 const form = document.getElementById("search-form");
 const divContainer = document.querySelector(".gallery");
 const btnLoadMore = new BtnLoadMore("#btnLoadMore");
 
 
-// let queryPage = 1;
-// let inputValue = "";
+
 
 const pixApi = new PixApi();
 
@@ -33,21 +32,23 @@ function onSubmit(e) {
     pixApi.resetPage();
 
 
-    // if (currentForm.length === 0) {
-    //     // return  inputClear();
-    //     btnLoadMore.classList.add("hidden");
-    // }  
+  if (currentForm.length === 0) {
+      
+        return  inputClear();
+       
+    }  
     
   pixApi.getPic();
   btnLoadMore.show();
-    fetchPix().finnaly(() => currentForm.reset());
+  fetchPix()
+    ;
         
 }
 
 
 
-function creatMarkup(data) {
-    return data.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => 
+function creatMarkup({hits}) {
+    return hits.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => 
     `
         <div class="photo-card">
         <a class="gallery__link" href="${largeImageURL}">
@@ -79,7 +80,7 @@ function inputClear () {
 
 function renderCard(data) {
     const markup = creatMarkup(data);
-    // divContainer.innerHTML = markup;
+   
 
     divContainer.insertAdjacentHTML("beforeend", markup);
 }
@@ -87,24 +88,35 @@ function renderCard(data) {
 
 
 
-function fetchPix() {
+async function fetchPix() {
      btnLoadMore.hide();
-    pixApi.getPic()
-        .then(({ hits }) => {
-            if (hits.length === 0) {
-                
-              throw new Error(Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again"));
-             
-            }
-            else if (hits.length  < 40) {
+try {
+  const newSearch = await pixApi.getPic()
   
-              throw new Error (Notiflix.Notify.failure("We're sorry, but you've reached the end of search results."));
+
+
+if (newSearch.data.hits.length === 0) {
+  Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.")
+ 
 }
-          
-            else {
-              btnLoadMore.show();
-                return renderCard(hits);
-                
-            }
-        })
+
+else if (newSearch.data.hits.length  < 40) {
+  
+ Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.")
 }
+ else {
+  
+  renderCard(newSearch.data);
+  btnLoadMore.show();
+ }
+
+
+  
+} catch (err) {
+  console.log(err);
+  } 
+  
+}
+
+
+
