@@ -100,6 +100,7 @@ if (newSearch.data.hits.length === 0) {
 
 else if (newSearch.data.hits.length  < 40) {
   btnLoadMore.hide()
+  renderCard(newSearch.data)
  Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.")
 }
  else {
@@ -115,6 +116,5 @@ else if (newSearch.data.hits.length  < 40) {
   } 
   
 }
-
 
 
